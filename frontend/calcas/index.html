@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo de Calças ABELAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    @font-face { font-family: 'MoonType'; src: url('../fonts/MoonType.ttf') format('truetype'); }
+    body { background-color: #29443c; color: #333; min-height: 100vh; padding: 20px; }
+    .container { max-width: 1400px; margin: 0 auto; background: white; padding: 15px; border-radius: 8px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+    .left { display: flex; align-items: center; gap: 30px; }
+    .left a { font-size: 14px; color: #000; text-decoration: none; font-weight: 500; transition: opacity 0.3s; }
+    .right a { font-family: 'MoonType', sans-serif; font-size: 28px; font-weight: 600; color: #000; cursor: pointer; text-decoration: none; }
+    .catalog-layout { display: flex; gap: 30px; }
+    .categoria-block { background: #f0f0f0 url('ftcalca/ftptincipal.jpg') center/cover no-repeat; border-radius: 8px; font-family: 'MoonType', sans-serif; width: 250px; height: 350px; display: flex; align-items: flex-start; justify-content: center; color: rgb(245, 245, 245); font-size: 1.8rem; font-weight: 600; padding: 30px 15px 0; text-align: center; position: sticky; top: 30px; text-shadow: 1px 1px 3px rgba(8, 3, 3, 0.5); }
+    .cards-main-container { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; align-items: stretch; }
+    .card { background: white; border-radius: 4px; overflow: hidden; transition: all 0.3s ease; border: 1px solid #eee; position: relative; text-decoration: none; display: flex; flex-direction: column; height: 480px; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .card img { width: 100%; height: 60%; object-fit: cover; display: block; }
+    .tag { position: absolute; top: 10px; right: 10px; background: black; color: white; font-size: 10px; padding: 3px 6px; border-radius: 2px; font-weight: 500; z-index: 2; }
+    .card-content { padding: 10px; height: auto; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; flex-grow: 1; }
+    .card-content h3 { font-size: 1rem; margin-bottom: 8px; color: #000; font-weight: 600; }
+    .card-content p { font-weight: 500; color: #666; margin-bottom: 15px; font-size: 0.9rem; }
+    .card-content button.add-to-cart-btn { background-color: #000; color: white; border: none; padding: 8px 0; border-radius: 2px; cursor: pointer; font-weight: 600; font-size: 0.8rem; width: 100%; letter-spacing: 0.5px; transition: background 0.3s; margin-top: auto; }
+    .card-content button.add-to-cart-btn:hover { background: #333; }
+    .favorite-btn { position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.7); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; transition: transform 0.2s; }
+    .favorite-btn svg { width: 18px; height: 18px; fill: #555; }
+    .favorite-btn.favorited svg { fill: #e74c3c; }
+    .opcoes-container { margin-bottom: 10px; }
+    .tamanhos-container { display: flex; gap: 8px; margin-bottom: 8px; }
+    .tamanho-option { width: 28px; height: 28px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; border: 1px solid #ddd; font-weight: 500; }
+    .tamanho-option.selected { background-color: #000; color: white; border-color: #000; }
+    .cores-container { display: flex; gap: 8px; }
+    .cor-option { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 1px solid #ddd; }
+    .cor-option.selected { transform: scale(1.1); box-shadow: 0 0 0 2px white, 0 0 0 4px #000; }
+    .carrinho-lateral { position: fixed; top: 0; right: -400px; width: 380px; height: 100%; background-color: #fff; box-shadow: -5px 0 15px rgba(0,0,0,0.15); z-index: 1001; display: flex; flex-direction: column; transition: right 0.4s ease-in-out; }
+    .carrinho-lateral.aberto { right: 0; }
+    .carrinho-lateral-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #eee; }
+    .fechar-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: #888; }
+    .carrinho-lateral-body { flex-grow: 1; overflow-y: auto; padding: 10px; }
+    .carrinho-lateral-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f0f0f0; gap: 15px; }
+    .carrinho-lateral-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 4px; }
+    .carrinho-lateral-item .info { flex-grow: 1; }
+    .carrinho-lateral-item h4 { font-size: 0.9rem; margin: 0 0 5px 0; }
+    .carrinho-lateral-item p.preco { font-size: 0.9rem; font-weight: 600; color: #333; margin: 0; }
+    .carrinho-lateral-item .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .carrinho-lateral-item .btn-qty-lateral { background-color: #eee; border: 1px solid #ddd; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-weight: bold;}
+    .remover-item-btn { background: none; border: none; font-size: 1.5rem; color: #cc0000; cursor: pointer; margin-left: auto; padding: 0 5px; }
+    .carrinho-vazio-msg { text-align: center; padding: 40px; color: #888; }
+    .carrinho-lateral-footer { padding: 20px; border-top: 1px solid #eee; background-color: #f9f9f9;}
+    .carrinho-lateral-footer .total { display: flex; justify-content: space-between; font-size: 1.1rem; margin-bottom: 15px; }
+    .btn-finalizar { display: block; width: 100%; padding: 15px; background-color: #000; color: #fff; text-align: center; text-decoration: none; border-radius: 4px; font-weight: 600; margin-bottom: 10px; }
+    .btn-limpar { display: block; width: 100%; padding: 10px; background-color: transparent; color: #888; text-align: center; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; font-weight: 500; cursor: pointer;}
+
+    /* --- CSS ADICIONADO PARA OS BOTÕES DE NAVEGAÇÃO --- */
+    .navegacao-categorias {
+        display: flex;
+        justify-content: space-between;
+        padding: 30px 0 10px 0; 
+        border-top: 1px solid #eee; 
+        margin-top: 30px; 
+    }
+    .botao-nav {
+        padding: 12px 24px;
+        background-color: #3d8f7a;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .botao-nav:hover {
+        background-color: #317262;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    /* --- FIM DO CSS ADICIONADO --- */
+
+  </style>
+</head>
+<body>
+  <div class="container"> 
+    <header>
+      <div class="left">
+        <a href="../login/index.html">Login</a>
+        <a href="#" id="abrir-carrinho-lateral">Carrinho (<span id="cart-count">0</span>)</a>
+      </div>
+      <div class="right">
+        <a href="../fundoprincipal/index.html">ABELAR</a>
+      </div>
+    </header>
+
+    <main>
+      <div class="catalog-layout">
+        <div class="categoria-block">CALÇAS MASCULINAS</div>
+        <div class="cards-main-container">
+          
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-nobre"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <span class="tag">NOVO</span>
+            <img src="ftcalca/calca1.jpg" alt="Calça Nobre" />
+            <div class="card-content">
+              <h3>Calça Nobre</h3>
+              <p>R$ 119,90</p>
+              <div class="opcoes-container">
+                <div class="tamanhos-container">
+                  <div class="tamanho-option" data-tamanho="P">P</div>
+                  <div class="tamanho-option" data-tamanho="G">G</div>
+                  <div class="tamanho-option" data-tamanho="GG">GG</div>
+                </div>
+                <div class="cores-container">
+                  <div class="cor-option" style="background-color: #808080;" data-cor="Cinza"></div>
+                  <div class="cor-option" style="background-color: #000000;" data-cor="Preto"></div>
+                </div>
+              </div>
+              <button class="add-to-cart-btn" data-id="calca-nobre" data-nome="Calça Nobre" data-preco="119.90" data-imagem="ftcalca/calca1.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-esportiva-comfy"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <span class="tag">LANÇAMENTO</span>
+            <img src="ftcalca/calca12.jpg" alt="Calça Esportiva Comfy" />
+            <div class="card-content">
+              <h3>Calça Esportiva Comfy</h3>
+              <p>R$ 119,90</p>
+              <div class="opcoes-container">
+                <div class="tamanhos-container">
+                  <div class="tamanho-option" data-tamanho="P">P</div>
+                  <div class="tamanho-option" data-tamanho="M">M</div>
+                  <div class="tamanho-option" data-tamanho="G">G</div>
+                </div>
+                <div class="cores-container">
+                  <div class="cor-option" style="background-color: #000000;" data-cor="Preto"></div>
+                  <div class="cor-option" style="background-color: #ffffff; border: 1px solid #ccc" data-cor="Branco"></div>
+                </div>
+              </div>
+              <button class="add-to-cart-btn" data-id="calca-esportiva-comfy" data-nome="Calça Esportiva Comfy" data-preco="119.90" data-imagem="ftcalca/calca12.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-esportiva-casual"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <img src="ftcalca/calca13.jpg" alt="Calca Esportiva Casual" />
+            <div class="card-content">
+                <h3>Calça Esportiva Casual</h3>
+                <p>R$ 219,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                        <div class="tamanho-option" data-tamanho="GG">GG</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #b22222;" data-cor="Vermelho"></div>
+                        <div class="cor-option" style="background-color: #800000;" data-cor="Bordô"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-esportiva-casual" data-nome="Calça Esportiva Casual" data-preco="219.90" data-imagem="ftcalca/calca13.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-slimfit-executive"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <span class="tag">PROMO</span>
+            <img src="ftcalca/calca2.jpg" alt="Calça Slim Fit Executive" />
+            <div class="card-content">
+                <h3>Calça Slim Fit Executive</h3>
+                <p>R$ 239,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="P">P</div>
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #0000cd;" data-cor="Azul"></div>
+                        <div class="cor-option" style="background-color: #1e90ff;" data-cor="Azul Claro"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-slimfit-executive" data-nome="Calça Slim Fit Executive" data-preco="239.90" data-imagem="ftcalca/calca2.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-velvet-noir"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <img src="ftcalca/calca3.jpg" alt="Velvet Noir Pants" />
+            <div class="card-content">
+                <h3>Velvet Noir Pants</h3>
+                <p>R$ 249,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                        <div class="tamanho-option" data-tamanho="GG">GG</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #696969;" data-cor="Cinza Escuro"></div>
+                        <div class="cor-option" style="background-color: #2f4f4f;" data-cor="Chumbo"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-velvet-noir" data-nome="Velvet Noir Pants" data-preco="249.90" data-imagem="ftcalca/calca3.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-cigarette"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <span class="tag">ÚLTIMAS</span>
+            <img src="ftcalca/calca7.jpg" alt="Cavalier Cigarette Pants" />
+            <div class="card-content">
+                <h3>Cavalier Cigarette Pants</h3>
+                <p>R$ 259,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="P">P</div>
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #556b2f;" data-cor="Verde Militar"></div>
+                        <div class="cor-option" style="background-color: #006400;" data-cor="Verde Escuro"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-cigarette" data-nome="Cavalier Cigarette Pants" data-preco="259.90" data-imagem="ftcalca/calca7.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-palazzo"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <img src="ftcalca/calca8.jpg" alt="Silk-Twill Palazzo" />
+            <div class="card-content">
+                <h3>Silk-Twill Palazzo</h3>
+                <p>R$ 154,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="P">P</div>
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #09013c;" data-cor="Azul"></div>
+                        <div class="cor-option" style="background-color: #ff8c00;" data-cor="Laranja Escuro"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-palazzo" data-nome="Silk-Twill Palazzo" data-preco="154.90" data-imagem="ftcalca/calca8.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-regent-woolen"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <span class="tag">DESTAQUE</span>
+            <img src="ftcalca/calca9.jpg" alt="Regent Woolen Trousers" />
+            <div class="card-content">
+                <h3>Regent Woolen Trousers</h3>
+                <p>R$ 239,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="P">P</div>
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #8b4513;" data-cor="Marrom"></div>
+                        <div class="cor-option" style="background-color: #a0522d;" data-cor="Marrom Claro"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-regent-woolen" data-nome="Regent Woolen Trousers" data-preco="239.90" data-imagem="ftcalca/calca9.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-baron-stretch"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <img src="ftcalca/calca5.jpg" alt="Baron Slim Stretch" />
+            <div class="card-content">
+                <h3>Baron Slim Stretch</h3>
+                <p>R$ 155,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="P">P</div>
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #4682b4;" data-cor="Azul Steel"></div>
+                        <div class="cor-option" style="background-color: #5f9ea0;" data-cor="Azul Cadete"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-baron-stretch" data-nome="Baron Slim Stretch" data-preco="155.90" data-imagem="ftcalca/calca5.jpg">COMPRAR</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <button class="favorite-btn" data-id="calca-linho-real"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <span class="tag">NOVO</span>
+            <img src="ftcalca/calca4.jpg" alt="Trousers de Linho Real" />
+            <div class="card-content">
+                <h3>Trousers de Linho Real</h3>
+                <p>R$ 239,90</p>
+                <div class="opcoes-container">
+                    <div class="tamanhos-container">
+                        <div class="tamanho-option" data-tamanho="P">P</div>
+                        <div class="tamanho-option" data-tamanho="M">M</div>
+                        <div class="tamanho-option" data-tamanho="G">G</div>
+                    </div>
+                    <div class="cores-container">
+                        <div class="cor-option" style="background-color: #ffffff; border: 1px solid #ccc" data-cor="Branco"></div>
+                        <div class="cor-option" style="background-color: #f5f5f5;" data-cor="Branco Gelo"></div>
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" data-id="calca-linho-real" data-nome="Trousers de Linho Real" data-preco="239.90" data-imagem="ftcalca/calca4.jpg">COMPRAR</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+  </div> 
+  
+  <div id="carrinho-lateral-modal" class="carrinho-lateral">
+    <div class="carrinho-lateral-header">
+      <h2>Seu Carrinho</h2>
+      <button id="fechar-carrinho-lateral" class="fechar-btn">&times;</button>
+    </div>
+    <div id="itens-carrinho-lateral" class="carrinho-lateral-body">
+      </div>
+    <div class="carrinho-lateral-footer">
+      <div class="total">
+          <strong>Total:</strong>
+          <span id="total-carrinho-lateral">R$ 0,00</span>
+      </div>
+      <a href="../carrinho/index.html" class="btn-finalizar">Finalizar Compra</a>
+      <button id="limpar-carrinho-btn" class="btn-limpar">Esvaziar Carrinho</button>
+    </div>
+  </div>
+  
+  <script src="../js/carrinho.js"></script> 
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+    // --- ELEMENTOS DO DOM ---
+    const modalCarrinho = document.getElementById('carrinho-lateral-modal');
+    const corpoCarrinhoLateral = document.getElementById('itens-carrinho-lateral');
+    const totalCarrinhoLateralEl = document.getElementById('total-carrinho-lateral');
+
+    // --- FUNÇÕES DE LÓGICA (FAVORITOS, CARRINHO LATERAL) ---
+
+    function toggleFavorito(id, botao) {
+        let favoritos = getFavoritos();
+        const index = favoritos.indexOf(id);
+        if (index > -1) {
+            favoritos.splice(index, 1);
+            botao.classList.remove('favorited');
+        } else {
+            favoritos.push(id);
+            botao.classList.add('favorited');
+        }
+        salvarFavoritos(favoritos);
+    }
+
+    function renderizarStatusFavoritos() {
+        const favoritos = getFavoritos();
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            if (favoritos.includes(btn.dataset.id)) {
+                btn.classList.add('favorited');
+            } else {
+                btn.classList.remove('favorited');
+            }
+        });
+    }
+
+    function limparCarrinho() {
+        if (confirm('Tem certeza que deseja esvaziar seu carrinho?')) {
+            salvarCarrinho([]);
+            atualizarTudoNaTela();
+            renderizarItensNoCarrinhoLateral();
+        }
+    }
+
+    function renderizarItensNoCarrinhoLateral() {
+        const carrinho = getCarrinho();
+        corpoCarrinhoLateral.innerHTML = '';
+        let subtotal = 0;
+
+        if (carrinho.length === 0) {
+            corpoCarrinhoLateral.innerHTML = '<div class="carrinho-vazio-msg"><p>Seu carrinho está vazio.</p></div>';
+            totalCarrinhoLateralEl.textContent = 'R$ 0,00';
+            return;
+        }
+
+        carrinho.forEach(item => {
+            const precoNumerico = parseFloat(item.preco);
+            subtotal += precoNumerico * item.quantidade;
+            const itemHTML = `
+                <div class="carrinho-lateral-item" data-id="<span class="math-inline">\{item\.id\}"\>
+<img src\="</span>{item.imagem}" alt="<span class="math-inline">\{item\.nome\}"\>
+<div class\="info"\>
+<h4\></span>{item.nome}</h4>
+                        <p class="preco"><span class="math-inline">\{formatCurrency\(precoNumerico\)\}</p\>
+<div class\="qty\-controls"\>
+<button class\="btn\-qty\-lateral" data\-id\="</span>{item.id}" data-change="-1">-</button>
+                            <span><span class="math-inline">\{item\.quantidade\}</span\>
+<button class\="btn\-qty\-lateral" data\-id\="</span>{item.id}" data-change="1">+</button>
+                        </div>
+                    </div>
+                    <button class="remover-item-btn" data-id="${item.id}">&times;</button>
+                </div>
+            `;
+            corpoCarrinhoLateral.innerHTML += itemHTML;
+        });
+
+        totalCarrinhoLateralEl.textContent = formatCurrency(subtotal);
+        ligarControlesDoCarrinhoLateral();
+    }
+
+    function ligarControlesDoCarrinhoLateral() {
+        corpoCarrinhoLateral.querySelectorAll('.remover-item-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                removerItemDoCarrinho(this.dataset.id);
+                renderizarItensNoCarrinhoLateral();
+            });
+        });
+
+        corpoCarrinhoLateral.querySelectorAll('.btn-qty-lateral').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const change = parseInt(this.dataset.change);
+                const item = getCarrinho().find(p => p.id === id);
+                if (item) {
+                    atualizarQuantidadeItem(id, item.quantidade + change);
+                    renderizarItensNoCarrinhoLateral();
+                }
+            });
+        });
+    }
+
+    // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+
+    // Roda na carga da página
+    atualizarContadorHeader();
+    renderizarStatusFavoritos();
+
+    // Liga os botões "COMPRAR" de todos os produtos
+    document.querySelectorAll('.add-to-cart-btn').forEach(botao => {
+        botao.addEventListener('click', function() {
+            const card = this.closest('.card');
+            const idBase = this.dataset.id;
+            const nomeBase = this.dataset.nome;
+            const preco = parseFloat(this.dataset.preco);
+            const imagem = this.dataset.imagem;
+
+            const tamanhoEl = card.querySelector('.tamanho-option.selected');
+            const corEl = card.querySelector('.cor-option.selected');
+
+            if (!tamanhoEl) {
+                alert('Por favor, selecione um tamanho.');
+                return;
+            }
+            if (!corEl) {
+                alert('Por favor, selecione uma cor.');
+                return;
+            }
+            const tamanho = tamanhoEl.dataset.tamanho;
+            const cor = corEl.dataset.cor;
+
+            const idVariante = `<span class="math-inline">\{idBase\}\-</span>{tamanho}-${cor}`;
+            const nomeVariante = `<span class="math-inline">\{nomeBase\} \(</span>{tamanho} / ${cor})`;
+            
+            adicionarAoCarrinho(idVariante, nomeVariante, preco, imagem);
+            renderizarItensNoCarrinhoLateral();
+        });
+    });
+
+    // Liga os botões de "FAVORITO"
+    document.querySelectorAll('.favorite-btn').forEach(botao => {
+        botao.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleFavorito(this.dataset.id, this);
+        });
+    });
+    
+    // Controle de abertura e fechamento do carrinho lateral
+    document.getElementById('abrir-carrinho-lateral').addEventListener('click', function(event) {
+        event.preventDefault(); 
+        renderizarItensNoCarrinhoLateral();
+        modalCarrinho.classList.add('aberto');
+    });
+
+    document.getElementById('fechar-carrinho-lateral').addEventListener('click', function() {
+        modalCarrinho.classList.remove('aberto');
+    });
+
+    // Liga o botão "Esvaziar Carrinho"
+    document.getElementById('limpar-carrinho-btn').addEventListener('click', limparCarrinho);
+
+    // LÓGICA PARA SELEÇÃO DE TAMANHO E COR
+    document.querySelectorAll('.card').forEach(card => {
+        card.querySelectorAll('.tamanho-option').forEach(opcao => {
+            opcao.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const container = this.closest('.tamanhos-container');
+                container.querySelectorAll('.tamanho-option').forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        card.querySelectorAll('.cor-option').forEach(opcao => {
+            opcao.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const container = this.closest('.cores-container');
+                container.querySelectorAll('.cor-option').forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    });
+  });
+  </script>
+</body>
+</html>

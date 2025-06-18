@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login / Cadastro</title>
+  <style>
+    :root {
+      --escuro: #21352f;
+      --verde-claro: #BFD8BD;
+      --cinza-verde: #BAC9B6;
+      --quase-branco: #D9E3D9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--escuro);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      perspective: 1200px;
+      width: 360px;
+      height: 460px;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--quase-branco);
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      transition: transform 0.8s ease;
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    form {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      padding: 40px 30px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #333;
+    }
+
+    form.register {
+      transform: rotateY(180deg);
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      color: var(--escuro);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    input {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--cinza-verde);
+      font-size: 16px;
+      background-color: var(--quase-branco);
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--escuro);
+      box-shadow: 0 0 8px rgba(33, 53, 47, 0.5);
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      background-color: var(--verde-claro);
+      color: var(--escuro);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #a7c3a5;
+    }
+
+    .toggle {
+      margin-top: 24px;
+      font-size: 14px;
+      text-align: center;
+      color: var(--escuro);
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+    }
+
+    .toggle:hover {
+      text-decoration: underline;
+    }
+
+    .alert {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .alert.error {
+      background-color: #e74c3c;
+      color: #fff;
+    }
+
+    .alert.success {
+      background-color: #27ae60;
+      color: #fff;
+    }
+
+    /* --- CSS ADICIONADO PARA O 'OLHO' --- */
+    .password-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+    }
+    
+    .password-container input {
+      width: 100%;
+      padding-right: 45px; /* Espaço para o ícone não sobrepor o texto */
+    }
+    
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+    }
+    
+    .toggle-password:hover {
+      color: #333;
+    }
+    /* --- FIM DO CSS ADICIONADO --- */
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card" id="card">
+
+    <form class="login" id="loginForm">
+      <h2>Entrar</h2>
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      
+      <div class="password-container">
+        <input type="password" id="loginPassword" placeholder="Senha" required />
+        <span class="toggle-password" id="toggleLoginPassword">
+          <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+          <svg class="eye-closed" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+        </span>
+      </div>
+      <button type="submit">Entrar</button>
+      <div class="toggle" id="toRegister">Não tem conta? Cadastrar</div>
+      <div id="loginAlert" class="alert" style="display:none"></div>
+    </form>
+
+    <form class="register" id="registerForm">
+      <h2>Criar Conta</h2>
+      <input type="text" id="regName" placeholder="Nome" required />
+      <input type="email" id="regEmail" placeholder="Email" required />
+      
+      <div class="password-container">
+        <input type="password" id="regPassword" placeholder="Senha" required />
+        <span class="toggle-password" id="toggleRegPassword">
+          <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+          <svg class="eye-closed" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+        </span>
+      </div>
+      <div class="password-container">
+        <input type="password" id="regConfirmPassword" placeholder="Confirme sua senha" required />
+        <span class="toggle-password" id="toggleConfirmPassword">
+          <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+          <svg class="eye-closed" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>
+        </span>
+      </div>
+      <button type="submit">Cadastrar</button>
+      <div class="toggle" id="toLogin">Já tem conta? Entrar</div>
+      <div id="registerAlert" class="alert" style="display:none"></div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const card = document.getElementById('card');
+    const toRegister = document.getElementById('toRegister');
+    const toLogin = document.getElementById('toLogin');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginAlert = document.getElementById('loginAlert');
+    const registerAlert = document.getElementById('registerAlert');
+
+    // --- JAVASCRIPT ADICIONADO PARA O 'OLHO' ---
+    // Função reutilizável para configurar o "olho"
+    function setupPasswordToggle(inputId, toggleId) {
+      const passwordInput = document.getElementById(inputId);
+      const togglePassword = document.getElementById(toggleId);
+      if (!passwordInput || !togglePassword) return; // Segurança caso o elemento não exista
+
+      const eyeOpen = togglePassword.querySelector('.eye-open');
+      const eyeClosed = togglePassword.querySelector('.eye-closed');
+
+      togglePassword.addEventListener('click', function () {
+        // Alterna o tipo do input
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Alterna a visibilidade dos ícones
+        if (type === 'password') {
+          eyeOpen.style.display = 'block';
+          eyeClosed.style.display = 'none';
+        } else {
+          eyeOpen.style.display = 'none';
+          eyeClosed.style.display = 'block';
+        }
+      });
+    }
+
+    // Configura para cada um dos campos de senha
+    setupPasswordToggle('loginPassword', 'toggleLoginPassword');
+    setupPasswordToggle('regPassword', 'toggleRegPassword');
+    setupPasswordToggle('regConfirmPassword', 'toggleConfirmPassword');
+    // --- FIM DO JAVASCRIPT ADICIONADO ---
+
+
+    // Funções para a animação do card (SEU CÓDIGO ORIGINAL - INTACTO)
+    toRegister.addEventListener('click', () => {
+      card.classList.add('flipped');
+      clearAlerts();
+    });
+
+    toLogin.addEventListener('click', () => {
+      card.classList.remove('flipped');
+      clearAlerts();
+    });
+    
+    // Funções para mostrar e limpar mensagens (SEU CÓDIGO ORIGINAL - INTACTO)
+    function clearAlerts() {
+      loginAlert.style.display = 'none';
+      registerAlert.style.display = 'none';
+    }
+    
+    function showMessage(element, message, isSuccess = true) {
+      element.style.display = 'block';
+      element.textContent = message;
+      element.className = 'alert ' + (isSuccess ? 'success' : 'error');
+    }
+
+    // Lógica de Login (SEU CÓDIGO ORIGINAL - INTACTO)
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearAlerts();
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const senha = document.getElementById('loginPassword').value;
+
+      if (!email || !senha) {
+        showMessage(loginAlert, 'Por favor, preencha todos os campos', false);
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Armazena o token e dados do usuário
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userName', data.nome);
+          
+          showMessage(loginAlert, 'Login realizado com sucesso!', true);
+          setTimeout(() => {
+            window.location.href = '../fundoprincipal/index.html';
+          }, 1000);
+        } else {
+          showMessage(loginAlert, data.error || 'Email ou senha incorretos', false);
+        }
+      } catch (error) {
+        showMessage(loginAlert, 'Erro ao conectar com o servidor', false);
+      }
+    });
+
+    // Lógica de Cadastro (SEU CÓDIGO ORIGINAL - INTACTO)
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearAlerts();
+      
+      const nome = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const senha = document.getElementById('regPassword').value;
+      const confirmSenha = document.getElementById('regConfirmPassword').value;
+
+      if (!nome || !email || !senha || !confirmSenha) {
+        showMessage(registerAlert, 'Por favor, preencha todos os campos', false);
+        return;
+      }
+
+      if (senha !== confirmSenha) {
+        showMessage(registerAlert, 'As senhas não coincidem', false);
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage(registerAlert, 'Cadastro realizado! Faça login.', true);
+          setTimeout(() => {
+            registerForm.reset();
+            card.classList.remove('flipped');
+            clearAlerts();
+          }, 1500);
+        } else {
+          showMessage(registerAlert, data.error || 'Erro ao cadastrar usuário', false);
+        }
+      } catch (error) {
+        showMessage(registerAlert, 'Erro ao conectar com o servidor', false);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

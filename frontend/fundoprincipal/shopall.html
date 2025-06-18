@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos os Produtos - Abelar</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* O seu CSS original que já estava no arquivo pode ser mantido aqui. */
+        /* Este é um exemplo baseado no código que você me enviou. */
+        
+        @font-face {
+            font-family: 'MoonType';
+            /* O caminho para a fonte deve ser relativo à pasta raiz do site. */
+            src: url('../fonts/MoonType.ttf') format('truetype'); 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #29443c; color: #333; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 20px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+        /* O link no logo deve apontar para a página principal */
+        header .logo a { font-family: 'MoonType', sans-serif; font-size: 28px; font-weight: 600; color: #000; text-decoration: none; }
+        header nav { display: flex; align-items: center; gap: 30px; }
+        header nav a { font-size: 14px; color: #000; text-decoration: none; font-weight: 500; transition: opacity 0.3s; }
+        header nav a:hover { opacity: 0.7; }
+        #lista-produtos h2 { text-align: center; font-family: 'Cinzel', serif; font-size: 2.5em; margin-bottom: 30px; font-weight: 400; }
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+        .produto-item { border: 1px solid #eee; border-radius: 8px; background: white; text-align: center; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+        .produto-item:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .produto-item img { width: 100%; height: 280px; object-fit: cover; background-color: #f5f5f5; }
+        .produto-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .produto-item h3 { font-size: 1rem; font-weight: 600; margin: 0 0 8px 0; color: #222; }
+        .produto-item .preco { font-weight: 700; color: #000; font-size: 1.2rem; margin-bottom: 15px; }
+        .produto-item button { background-color: #000; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: auto; font-weight: 600; transition: background-color 0.3s; }
+        .produto-item button:hover { background-color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="container"> 
+        <header>
+            <div class="logo"><a href="index.html">ABELAR</a></div>
+            <nav>
+                <a href="../novas colecoes/index.html">Novas Coleções</a>
+                <a href="../login/index.html">Login</a>
+                <a href="../favoritos.html">Favoritos</a>
+             </nav>
+        </header>
+        <main>
+            <section id="lista-produtos">
+                <h2>Todos os Nossos Produtos</h2>
+                <div id="container-produtos" class="produtos-grid">
+                    <p>Carregando produtos...</p> 
+                 </div>
+            </section>
+        </main>
+    </div>
+
+<script src="../js/shopall.js"></script>
+
+</body>
+</html>

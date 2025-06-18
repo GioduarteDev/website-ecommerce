@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abelar - Estilo que Define</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        :root {
+            --bg-dark: #2c3a34;
+            --bg-light: #f4f1ea;
+            --text-dark: #1f1f1f;
+            --text-light: #fdfdfd;
+            --accent: #d4c1a9;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); color: var(--text-light); }
+        .container { width: 90%; max-width: 1280px; margin: 0 auto; }
+        a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+        
+        .main-header {
+            padding: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; }
+        
+        .header-icons { display: flex; gap: 25px; font-size: 1.3rem; }
+        .header-icons a:hover { color: var(--accent); transform: scale(1.1); }
+
+        .hero-section {
+            position: relative;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(https://images.unsplash.com/photo-1509375541662-3162231e502a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzOTk5Mzh8MHwxfGFsbHx8fHx8fHx8fDE3MTg1NjM1OTR8&ixlib=rb-4.0.3&q=80&w=1920) no-repeat center center/cover;
+            color: var(--text-light);
+        }
+        
+        .hero-content h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            animation: slideUp 1s ease-out 0.3s backwards;
+        }
+        
+        .hero-content .cta-button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--text-light);
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideUp 1s ease-out 0.6s backwards;
+        }
+
+        .hero-content .cta-button:hover { background-color: var(--text-light); color: var(--text-dark); }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120"><path fill="%232c3a34" fill-opacity="1" d="M0,64L60,80C120,96,240,128,360,117.3C480,107,600,53,720,53.3C840,53,960,107,1080,112C1200,117,1320,75,1380,53.3L1440,32L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"></path></svg>') no-repeat center bottom/cover;
+            transform: scaleX(-1);
+        }
+        
+        main { padding: 80px 0; }
+        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; text-align: center; margin-bottom: 50px; font-style: italic; }
+        
+        .manifesto-section { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 60px; padding: 80px 0; }
+        .manifesto-image img { width: 100%; height: auto; border-radius: 8px; }
+        .manifesto-text h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; }
+        .manifesto-text p { font-size: 1rem; line-height: 1.8; color: #ccc; }
+
+        /* --- ESTILOS DO NOVO CARROSSEL DE TENDÊNCIAS --- */
+        .tendencias-carousel-section { position: relative; padding: 0 50px; }
+        .tendencias-carrossel { display: flex; transition: transform 0.5s ease-in-out; }
+        .tendencia-slide { min-width: 100%; box-sizing: border-box; display: none; text-align: center; }
+        .tendencia-slide.active { display: block; }
+        
+        .tendencia-slide img {
+            width: 100%;
+            height: 500px;
+            object-fit: contain; 
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tendencia-slide p { font-size: 1.1rem; color: #ccc; font-style: italic; }
+
+
+        /* --- ESTILOS DA GRADE DE PRODUTOS --- */
+        .product-grid-section { padding-top: 80px; }
+        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 35px; }
+        .product-card {
+            display: block;
+            background-color: transparent;
+            border: 1px solid #ffffff22;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .product-card:hover { transform: translateY(-10px); border-color: #ffffff88; }
+        .product-card img { width: 100%; height: 350px; object-fit: cover; display: block; background-color: #333; }
+        .product-card-info { padding: 20px; }
+        .product-title { font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; transition: transform 0.3s ease-in-out, color 0.3s ease; }
+        .product-card:hover .product-title { transform: translateX(5px); color: var(--accent); }
+        .product-price { font-size: 1rem; font-weight: 400; color: #ccc; }
+        
+        .carousel-control {
+            position: absolute;
+            top: 45%;
+            transform: translateY(-50%);
+            background: none;
+            border: 1px solid #ffffff55;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .carousel-control:hover { background-color: #ffffff22; border-color: #fff; }
+        .prev { left: -25px; }
+        .next { right: -25px; }
+        
+        /* --- RODAPÉ --- */
+        .main-footer { background-color: var(--bg-light); color: var(--text-dark); padding: 60px 0; margin-top: 80px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+        .footer-column h4 { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li a { font-size: 0.95rem; line-height: 2; color: #555; }
+        .footer-column ul li a:hover { color: var(--text-dark); text-decoration: underline; }
+        .footer-socials a { margin-right: 15px; font-size: 1.3rem; color: #333; }
+        .footer-socials a:hover { color: var(--bg-dark); }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 0.9rem; color: #777; }
+
+        @media (max-width: 992px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .manifesto-section { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; gap: 20px; }
+            .hero-content h1 { font-size: 3rem; }
+            .section-title { font-size: 2.5rem; }
+            .tendencias-carousel-section { padding: 0; }
+            .carousel-control { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header container">
+        <a href="index.html" class="logo">Abelar</a>
+        <div class="header-icons">
+            <a href="../login/index.html" aria-label="Login"><i class="fas fa-user"></i></a>
+            <a href="../favoritos.html" aria-label="Favoritos"><i class="fas fa-heart"></i></a>
+            <a href="../carrinho/index.html" aria-label="Carrinho de Compras"><i class="fas fa-shopping-bag"></i></a>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>O MENOS É O NOVO MAIS</h1>
+            <a href="shopall.html" class="cta-button">EXPLORAR COLEÇÃO</a>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="manifesto-section">
+            <div class="manifesto-image">
+                <img src="imgs/carrossel/download (10).jfif" alt="Detalhe de tecido de alta qualidade">
+            </div>
+            <div class="manifesto-text">
+                <h2>Design que Perdura.</h2>
+                <p>Na Abelar, a simplicidade é a nossa maior sofisticação. Criamos peças essenciais com materiais de alta qualidade, feitas para transcender tendências e estações. Menos excesso, mais estilo. Menos pressa, mais propósito.</p>
+            </div>
+        </section>
+
+        <section id="tendencias" class="tendencias-section">
+            <h2 class="section-title">Destaques</h2>
+            <div class="tendencias-carousel-section">
+                <div class="tendencias-carrossel">
+                    <div class="tendencia-slide active">
+                        <img src="imgs/carrossel/background1.png" alt="Tendência 1">
+                        <p>Estilo é atitude.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background2.jfif" alt="Tendência 2">
+                        <p>Moda também é conforto.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background3.jfif" alt="Tendência 3">
+                        <p>Estilo é quando a roupa trabalha por você — e você só agradece.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background4.jfif" alt="Tendência 4">
+                        <p>Estilo não grita — ele sussurra com classe.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background6.jfif" alt="Tendência 5">
+                        <p>Menos bagunça, mais elegância.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background3.png" alt="Tendência 6">
+                        <p>Estilo simples, efeito forte.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background7.jfif" alt="Tendência 7">
+                        <p>Elegância mora no simples.</p>
+                    </div>
+                    <div class="tendencia-slide">
+                        <img src="imgs/carrossel/background8.jfif" alt="Tendência 8">
+                        <p>Quando o look vai bem, tudo vai.</p>
+                    </div>
+                </div>
+                <button class="carousel-control prev" aria-label="Anterior">&#10094;</button>
+                <button class="carousel-control next" aria-label="Próximo">&#10095;</button>
+            </div>
+        </section>
+
+        <section id="product-grid-section" class="product-grid-section">
+            <h2 class="section-title">Nossa Curadoria</h2>
+            <div class="product-grid">
+                <a href="../camisas/index.html">
+                    <div class="product-card">
+                        <img src="imgs/container/camisas.png" alt="Camisa Minimalista">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Camisas</h3>
+                        </div>
+                    </div>
+                </a>
+                <a href="../calcas/index.html">
+                    <div class="product-card">
+                        <img src="imgs/container/calcas.jpg" alt="Calça Reta de Alfaiataria">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Calças</h3>
+                        </div>
+                    </div>
+                </a>
+                <a href="../bermudas/index.html">
+                    <div class="product-card">
+                        <img src="imgs/container/bermudas.jpg" alt="Shorts de Linho">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Shorts</h3>
+                        </div>
+                    </div>
+                </a>
+                <a href="../jackets/index.html">
+                    <div class="product-card">
+                        <img src="imgs/container/jackets.jpg" alt="Jaqueta Jeans Clássica">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Jackets</h3>
+                        </div>
+                    </div>
+                </a>
+                <a href="../acessorios/index.html">
+                    <div class="product-card">
+                        <img src="imgs/container/acessorios.jpg" alt="Cinto de Couro">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Acessórios</h3>
+                        </div>
+                    </div>
+                </a>
+                
+            
+                <a href="../novidade/index.html">
+                    <div class="product-card">
+                        <img src="imgcards/novidade.jpg" alt="Moletom com Capuz">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Novidades</h3>
+                        </div>
+                    </div>
+                </a>
+                 <a href="../tendencias/index.html">
+                    <div class="product-card">
+                        <img src="imgcards/tendencias.jpg" alt="Moletom com Capuz">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Tendências</h3>
+                        </div>
+                    </div>
+                </a>
+                <a href="../promocao/index.html">
+                    <div class="product-card">
+                        <img src="imgcards/promocao.jpg" alt="Tênis de Lona">
+                        <div class="product-card-info">
+                            <h3 class="product-title">Promoção</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4>Loja</h4>
+                <ul>
+                    <li><a href="../novas colecoes/index.html">Novas Coleções</a></li>
+                    <li><a href="../tendencias/index.html">Tendências</a></li>
+                    <li><a href="../promocao/index.html">Promoções</a></li>
+                    <li><a href="shopall.html">Todos os Produtos</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Categorias</h4>
+                <ul>
+                    <li><a href="../camisas/index.html">Camisas</a></li>
+                    <li><a href="../calcas/index.html">Calças</a></li>
+                    <li><a href="../bermudas/index.html">Shorts</a></li>
+                    <li><a href="../jackets/index.html">Jackets</a></li>
+                    <li><a href="../acessorios/index.html">Acessórios</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Suporte</h4>
+                <ul>
+                    <li><a href="#">Fale Conosco</a></li>
+                    <li><a href="#">Dúvidas Frequentes</a></li>
+                    <li><a href="#">Política de Troca</a></li>
+                    <li><a href="#">Sobre Nós</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Siga a Abelar</h4>
+                <p>Fique por dentro das novidades e inspirações.</p>
+                <div class="footer-socials" style="margin-top: 10px;">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Abelar. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // LÓGICA DO CARROSSEL DE TENDÊNCIAS
+            const carrossel = document.querySelector('.tendencias-carrossel');
+            if (carrossel) {
+                const slides = carrossel.querySelectorAll('.tendencia-slide');
+                const prevBtn = document.querySelector('.tendencias-carousel-section .prev');
+                const nextBtn = document.querySelector('.tendencias-carousel-section .next');
+                let currentIndex = 0;
+
+                function goToSlide(index) {
+                    slides.forEach((slide, i) => {
+                        slide.classList.remove('active');
+                        if (i === index) {
+                            slide.classList.add('active');
+                        }
+                    });
+                    // A transição será feita pelo CSS de 'display', não precisamos de 'transform' aqui.
+                }
+
+                function changeSlide(step) {
+                    currentIndex = (currentIndex + step + slides.length) % slides.length;
+                    goToSlide(currentIndex);
+                }
+                
+                if(slides.length > 0) {
+                    slides[0].classList.add('active');
+                }
+
+                if(prevBtn && nextBtn) {
+                    prevBtn.addEventListener('click', () => changeSlide(-1));
+                    nextBtn.addEventListener('click', () => changeSlide(1));
+                }
+            }
+        });
+    </script>
+</body>
+</html>

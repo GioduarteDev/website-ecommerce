@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Abelar - Um olhar contemporâneo sobre o vestir. Estilo, função e arte em harmonia." />
+  <title>Tendências - Abelar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4B5C52;
+      --secondary-color: #2C3E33;
+      --text-color: #333;
+      --light-text: #555;
+      --white: #ffffff;
+      --border-radius: 8px;
+      --transition-time: 0.4s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #29443c; /* Corrigido para manter consistência */
+      color: var(--text-color);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+    }
+    
+    header {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 3.75rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 2rem;
+    } 
+    
+    .logo {
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color);
+      border-bottom: 2px solid var(--text-color);
+      padding-bottom: 0.25rem;
+      transition: color var(--transition-time) ease, border-color var(--transition-time) ease;
+    }
+
+    .logo:hover, .logo:focus {
+      color: var(--secondary-color);
+      border-color: var(--secondary-color);
+    } 
+
+    .trend-title {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+      color: #222;
+      font-family: 'Georgia', serif;
+      font-weight: 400;
+    }
+
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 3.75rem;
+    }
+
+    .gallery-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .gallery-item {
+      flex: 0 0 calc(20% - 20px); /* 5 imagens por linha */
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--border-radius);
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      transition: transform var(--transition-time) ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .gallery-item figcaption {
+      margin-top: 0.625rem;
+      font-size: 0.875rem;
+      color: var(--light-text);
+      font-weight: 500;
+    }
+
+    .concept-text {
+      text-align: center;
+      font-size: 1.125rem;
+      font-style: italic;
+      max-width: 700px;
+      margin: 40px auto;
+      color: var(--light-text);
+      padding: 1.25rem 0;
+      line-height: 1.8;
+    }
+
+    /* --- CSS PARA OS BOTÕES DE NAVEGAÇÃO --- */
+    .navegacao-categorias {
+        display: flex;
+        justify-content: space-between;
+        padding: 30px 0 10px 0; 
+        border-top: 1px solid #eee; 
+        margin-top: 30px; 
+    }
+    .botao-nav {
+        padding: 12px 24px;
+        background-color: #3d8f7a;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .botao-nav:hover {
+        background-color: #317262;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    /* --- FIM DO CSS ADICIONADO --- */
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .gallery-item {
+        flex: 0 0 calc(25% - 20px); /* 4 imagens por linha */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+      
+      header {
+        margin-bottom: 2.5rem;
+      }
+      
+      .gallery-item {
+        flex: 0 0 calc(33.333% - 20px); /* 3 imagens por linha */
+      }
+
+      .concept-text {
+        font-size: 1rem;
+        padding: 1rem;
+      }
+
+      .logo {
+        font-size: 1.25rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gallery {
+        gap: 2rem;
+      }
+      
+      .gallery-item {
+        flex: 0 0 calc(50% - 20px); /* 2 imagens por linha */
+      }
+
+      .gallery-item figcaption {
+        font-size: 0.8125rem;
+      }
+
+      .concept-text {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container"> 
+    <header>
+      <a href="../fundoprincipal/index.html" class="logo" aria-label="Voltar para página inicial">ABELAR</a>
+    </header>
+
+    <main> 
+      <h1 class="trend-title">THE SEASONAL EDIT</h1>
+
+      <section class="gallery" aria-label="Galeria de tendências">
+        <div class="gallery-row">
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm2.jfif" alt="ft" loading="lazy" />
+            <figcaption> Focando na essência do estilo.</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm3.jfif" alt="Descrição detalhada da Foto 2" loading="lazy" />
+            <figcaption>O clássico não teme o tempo</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm4.jfif" alt="Descrição detalhada da Foto 3" loading="lazy" />
+            <figcaption> Uma afirmação sobre a atemporalidade das escolhas</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm5.jfif" alt="Descrição detalhada da Foto 4" loading="lazy" />
+            <figcaption>Elegância nos detalhes, discrição na atitude.</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm6.jpg" alt="Descrição detalhada da Foto 5" loading="lazy" />
+            <figcaption>Menos tendência, mais tradição</figcaption>
+          </figure>
+        </div>
+
+        <div class="concept-text">
+          <p>Um olhar contemporâneo sobre o vestir. Estilo, função e arte em harmonia.</p>
+        </div>
+
+        <div class="gallery-row">
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm10.jpg" alt="Descrição detalhada da Foto 6" loading="lazy" />
+            <figcaption>A simplicidade é o ápice da sofisticação.</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm8.jpg" alt="Descrição detalhada da Foto 7" loading="lazy" />
+            <figcaption>Perfeito para looks minimalistas, com cores neutras </figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm9.jpg" alt="Descrição detalhada da Foto 8" loading="lazy" />
+            <figcaption>Herança em cada fibra.</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm1.jpg" alt="Descrição detalhada da Foto 9" loading="lazy" />
+            <figcaption>Confiança sob medida.</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <img src="fttendencia/oldm7.jpg" alt="Descrição detalhada da Foto 10" loading="lazy" />
+            <figcaption>O luxo de não precisar provar nada</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+    
+    <div class="navegacao-categorias">
+      <a href="../promocao/index.html" class="botao-nav">&larr; Voltar (Promoção)</a>
+      <a href="../../frontend/acessorios/index.html" class="botao-nav">Avançar (Acessórios) &rarr;</a>
+    </div>
+    
+  </div>
+</body>
+</html>

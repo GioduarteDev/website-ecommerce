@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras - Abelar</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. RESET E ESTILOS GLOBAIS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        @font-face {
+            font-family: 'OptimusPrinceps';
+            src: url('../fonts/OptimusPrinceps.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'MoonType';
+            src: url('../fonts/MoonType.ttf') format('truetype');
+        }
+        
+        body {
+            background-color: #21352f;
+            color: #111;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* --- 2. CABEÇALHO --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .logo a {
+            font-family: 'MoonType', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #000;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .header-link {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #555;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .header-link:hover {
+            color: #000;
+        }
+
+        /* --- 3. TÍTULO DA PÁGINA --- */
+        .page-title h1 {
+            font-family: 'OptimusPrinceps', serif;
+            font-size: 3rem;
+            text-align: center;
+            margin: 40px 0;
+            letter-spacing: 1.5px;
+            font-weight: normal;
+        }
+        
+        /* --- 4. LAYOUT DO CARRINHO --- */
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .cart-items-column .header-table {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 0.5fr;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+            color: #666;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            text-align: center;
+        }
+        .header-table .product-header { text-align: left; }
+        
+        .summary-column {
+            position: sticky;
+            top: 40px;
+        }
+        .order-summary {
+            border: 1px solid #eaeaea;
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .order-summary h2 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .summary-line.total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #000;
+        }
+        .checkout-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background-color: #000;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .checkout-button:hover { background-color: #333; }
+        
+        /* --- 5. SEÇÃO DE RECOMENDAÇÕES --- */
+        .recommendations {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #eaeaea;
+        }
+        .recommendations h2 {
+            font-family: 'OptimusPrinceps', serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: normal;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background-color: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+        .card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .card p {
+            padding: 20px;
+            font-weight: 500;
+        }
+
+
+        /* --- 6. ESTILOS DO RODAPÉ (NO FUNDO VERDE) --- */
+        footer {
+            max-width: 1200px; 
+            margin: 40px auto 0 auto; 
+            padding: 40px;
+            color: #c7d1ce; 
+            text-align: center;
+        }
+
+        footer h3 {
+            font-family: 'OptimusPrinceps', serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff; 
+            font-weight: normal;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: left;
+            margin: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+        }
+
+        .footer-column strong {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            color: #ffffff; 
+        }
+
+        .footer-column p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 8px 0;
+            color: #c7d1ce;
+        }
+        
+        footer .copyright {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- 7. CSS DE COMPATIBILIDADE (A PONTE ENTRE O CÉREBRO JS E O DESIGN) --- */
+        .item-carrinho-final {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 0.5fr;
+            align-items: center;
+            padding: 25px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .item-carrinho-final .detalhes {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .item-carrinho-final .detalhes img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .item-carrinho-final .info-produto {
+            display: flex;
+            flex-direction: column;
+        }
+        .item-carrinho-final .nome-produto {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .item-carrinho-final .preco-unitario {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .item-carrinho-final .quantidade {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            width: fit-content;
+            margin: auto;
+        }
+        .item-carrinho-final .quantidade span {
+            width: 40px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .item-carrinho-final .quantidade .btn-qty {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+        }
+        .item-carrinho-final .subtotal-item {
+            text-align: center;
+            font-weight: 600;
+        }
+        .item-carrinho-final .btn-remover-final {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            margin: auto;
+            display: block;
+        }
+        .btn-remover-final:hover { color: #000; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="../fundoprincipal/index.html">ABELAR</a>
+            </div>
+            <div class="header-links">
+                <a href="../login/index.html" class="header-link">Login</a>
+                <a href="../favoritos.html" class="header-link">Favoritos</a>
+                <a href="#" class="header-link">Carrinho (<span id="cart-count">0</span>)</a>
+            </div>
+        </header>
+
+        <div class="page-title">
+            <h1>Carrinho de Compras</h1>
+        </div>
+
+        <div class="cart-layout">
+            <div class="cart-items-column">
+                <div class="header-table">
+                    <div class="product-header">Produto</div>
+                    <div>Quantidade</div>
+                    <div>Subtotal</div>
+                    <div></div>
+                </div>
+                <div id="carrinho-final-container">
+                    </div>
+            </div>
+
+            <div class="summary-column">
+                <div class="order-summary">
+                    <h2>Resumo do Pedido</h2>
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span id="subtotal-valor">R$ 0,00</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Frete</span>
+                        <span id="frete-valor">R$ 0,00</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <span id="total-valor">R$ 0,00</span>
+                    </div>
+                    <button class="checkout-button">PROSSEGUIR PARA PAGAMENTO</button>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+    
+    <footer>
+        <h3>Lidere assim como o grupo 3 </h3>
+        <p>Entre em contato conosco: grupo3abelar@email.com | (61) 961673636</p>
+        <div class="footer-grid">
+            <div class="footer-column">
+                <strong>DESIGN & DESENVOLVIMENTO</strong>
+                <p>Giovanna Duarte -  Desenvolvedora Principal/ Requisitos e Testes/UI/UX/</p>
+                <p>João Pedro -  Desenvolvedor </p>
+                <p>Camila Ribeiro - Protótipo</p>
+                <p> João Barros - Documentação </p>
+                <p> Jasmine de Sá - Gerente e Repositora</p>
+            </div>
+            <div class="footer-column">
+                <strong>TESTES E PESQUISA</strong>
+                <p>Giovanna Duarte - QA e Feedback</p>
+                <p>Camila Ribeiro- Produto & Tendência</p>
+            </div>
+            <div class="footer-column">
+                <strong>REDES SOCIAIS</strong>
+                <p>@grupo3.abelar</p>
+                <p>Instagram</p>
+                <p>TikTok</p>
+            </div>
+        </div>
+        <p class="copyright">© 2025 Abelar | Todos os direitos reservados</p>
+    </footer>
+
+    <script src="../js/carrinho.js" defer></script>
+</body>
+</html>

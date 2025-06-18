@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Favoritos - ABELAR</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+    
+    @font-face { 
+      font-family: 'MoonType'; 
+      /* Caminho corrigido de acordo com sua estrutura de pastas */
+      src: url('fonts/MoonType.ttf') format('truetype'); 
+    }
+    
+    :root {
+      --coral: #FBA0A3;
+      --feldgrau: #21352F;
+      --dark-green: #1A2B26;
+      --light-bg: #FFF9F9;
+      --text-dark: #333333;
+      --border-light: #eeeeee;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Poppins', sans-serif;
+      background-color: var(--dark-green);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .left a {
+      font-size: 16px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .left a.active,
+    .left a:hover {
+      color: #000;
+    }
+
+    .left a.active::after,
+    .left a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--coral);
+    }
+
+    .right a {
+      font-family: 'MoonType', sans-serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    .page-container {
+      background-color: var(--light-bg);
+      min-height: 90vh;
+      border-radius: 40px 40px 0 0;
+      margin: 5vh auto 0;
+      padding-top: 40px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+      max-width: 95%;
+    }
+
+    main {
+      padding: 40px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--feldgrau);
+      margin-bottom: 40px;
+      font-size: 2.2rem;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card::before {
+      content: '❤️ FAVORITO';
+      position: absolute;
+      top: 12px; right: -30px;
+      background-color: var(--coral);
+      color: white; padding: 3px 35px;
+      transform: rotate(45deg);
+      font-size: 12px; font-weight: bold;
+      z-index: 1;
+    }
+
+    .card img {
+      width: 100%; border-radius: 8px;
+      aspect-ratio: 1/1; object-fit: cover;
+      margin-bottom: 15px; transition: all 0.3s;
+    }
+
+    .card:hover img { transform: scale(1.05); }
+
+    .card h3 {
+      margin: 10px 0 5px; font-size: 18px;
+      color: var(--feldgrau); font-weight: 600;
+      text-align: center;
+    }
+
+    .card p {
+      margin: 0 0 15px; color: var(--feldgrau);
+      font-size: 16px; font-weight: 500;
+    }
+
+    .buttons {
+      width: 100%; display: flex;
+      justify-content: space-between;
+      gap: 10px; margin-top: auto;
+    }
+
+    .buttons button {
+      flex: 1; padding: 10px; border: none;
+      border-radius: 6px; font-weight: bold;
+      cursor: pointer; transition: all 0.3s;
+      font-size: 14px; font-family: 'Poppins', sans-serif;
+    }
+
+    .comprar { background-color: var(--feldgrau); color: white; }
+    .comprar:hover { background-color: #2a453d; }
+    .remover { background-color: var(--coral); color: var(--feldgrau); }
+    .remover:hover { background-color: #ffb3b6; }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px;
+      grid-column: 1 / -1; background-color: white;
+      border-radius: 15px; border: 2px dashed var(--coral);
+    }
+    .empty-state h2, .empty-state p { color: var(--feldgrau); }
+    
+    @media (max-width: 768px) {
+        header {
+            flex-direction: column-reverse;
+            gap: 20px;
+            padding: 20px;
+        }
+        .left {
+            width: 100%;
+            justify-content: space-around;
+        }
+    }
+  </style>
+</head>
+<body>
+  
+  <header>
+    <div class="left">
+        <a href="login/index.html">Login</a>
+        <a href="carrinho/index.html">Carrinho</a>
+        <a href="favoritos.html" class="active">Favoritos</a>
+    </div>
+    <div class="right">
+        <a href="fundoprincipal/index.html">ABELAR</a>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <main>
+      <h1>Seus Favoritos</h1>
+      <div class="grid" id="favoritosContainer">
+        </div>
+    </main>
+  </div>
+
+  <script src="js/carrinho.js"></script> 
+
+  <script>
+    // Por favor, verifique se os caminhos das imagens dos produtos estão corretos!
+    const todosOsProdutos = [
+        { id: 'bermuda-01', nome: 'Bermuda Modelo 1', preco: 79.90, imagem: 'https://source.unsplash.com/random/600x600/?shorts,men&sig=1' },
+        { id: 'bermuda-02', nome: 'Bermuda Modelo 2', preco: 84.90, imagem: 'https://source.unsplash.com/random/600x600/?shorts,men&sig=2' },
+        // Usei como exemplo a pasta 'ftscarri' que aparece na sua imagem dentro de 'carrinho'
+        { id: 'acessorio-anel-bubble', nome: 'Anel Bubble', preco: 188.00, imagem: 'carrinho/ftscarri/acess2.jfif' },
+        { id: 'acessorio-colar-dourado', nome: 'Colar Dourado', preco: 330.00, imagem: 'carrinho/ftscarri/acess3.jfif' },
+    ];
+
+    const container = document.getElementById('favoritosContainer');
+
+    function renderFavoritos() {
+      container.innerHTML = '';
+      const idsFavoritos = getFavoritos(); 
+      const produtosFavoritos = todosOsProdutos.filter(produto => idsFavoritos.includes(produto.id));
+
+      if (produtosFavoritos.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h2>Sua lista de favoritos está vazia.</h2>
+            <p>Explore nossa coleção e encontre suas peças favoritas!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      produtosFavoritos.forEach(produto => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.onerror=null;this.src='https://source.unsplash.com/random/600x600/?apparel';">
+          <h3>${produto.nome}</h3>
+          <p>${formatCurrency(produto.preco)}</p>
+          <div class="buttons">
+            <button class="comprar" onclick="comprarItem('${produto.id}')">Comprar</button>
+            <button class="remover" onclick="removerItem('${produto.id}', event)">Remover</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function comprarItem(id) {
+        const produto = todosOsProdutos.find(p => p.id === id);
+        if (produto) {
+            adicionarAoCarrinho(produto.id, produto.nome, produto.preco, produto.imagem);
+        }
+    }
+
+    function removerItem(id, event) {
+        let idsFavoritos = getFavoritos();
+        idsFavoritos = idsFavoritos.filter(favId => favId !== id);
+        salvarFavoritos(idsFavoritos);
+
+        const card = event.target.closest('.card');
+        card.style.transition = 'opacity 0.4s, transform 0.4s';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        
+        setTimeout(() => renderFavoritos(), 400);
+    }
+
+    // Garante que o getFavoritos exista antes de ser chamado
+    if (typeof getFavoritos === 'function') {
+        document.addEventListener('DOMContentLoaded', renderFavoritos);
+    } else {
+        console.error("Erro: A função getFavoritos() (do arquivo carrinho.js) não foi encontrada. Verifique se o arquivo foi carregado corretamente.");
+    }
+  </script>
+</body>
+</html>
