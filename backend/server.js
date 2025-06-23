@@ -58,7 +58,14 @@ db.serialize(() => {
         preco REAL NOT NULL, 
         urlImagem TEXT, 
         estoque INTEGER DEFAULT 0 NOT NULL
-    )`);
+    )`); 
+
+      db.run(`CREATE TABLE IF NOT EXISTS favoritos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            produto_id INTEGER NOT NULL,
+           UNIQUE (usuario_id, produto_id)
+)`);
     
     db.run(`CREATE TABLE IF NOT EXISTS carrinho_itens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -265,6 +272,68 @@ app.delete('/api/carrinho/:id_produto', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('ERRO AO REMOVER DO CARRINHO:', error);
         res.status(500).json({ error: 'Erro ao remover item do carrinho.' });
+    }
+}); // =============================================================================
+// ROTAS DE FAVORITOS (PROTEGIDAS)
+// =============================================================================
+
+// ROTA PARA ADICIONAR UM PRODUTO AOS FAVORITOS
+app.post('/api/favoritos', authenticateToken, async (req, res) => {
+    const { produto_id } = req.body;
+    const usuario_id = req.user.userId; // Vem do middleware authenticateToken
+
+    if (!produto_id) {
+        return res.status(400).json({ error: 'O ID do produto é obrigatório.' });
+    }
+
+    try {
+        // Usando sua função dbRun para inserir, ignorando se já existir (por causa do UNIQUE na tabela)
+        const query = 'INSERT OR IGNORE INTO favoritos (usuario_id, produto_id) VALUES (?, ?)';
+        await dbRun(query, [usuario_id, produto_id]);
+        res.status(201).json({ message: 'Produto adicionado aos favoritos com sucesso!' });
+    } catch (error) {
+        console.error('ERRO AO ADICIONAR FAVORITO:', error);
+        res.status(500).json({ error: 'Erro interno ao adicionar favorito.' });
+    }
+});
+
+// ROTA PARA REMOVER UM PRODUTO DOS FAVORITOS
+app.delete('/api/favoritos/:produto_id', authenticateToken, async (req, res) => {
+    const { produto_id } = req.params; // Pega o ID da URL
+    const usuario_id = req.user.userId;
+
+    try {
+        const query = 'DELETE FROM favoritos WHERE usuario_id = ? AND produto_id = ?';
+        const result = await dbRun(query, [usuario_id, produto_id]);
+        
+        if (result.changes === 0) {
+            // Isso pode acontecer se o frontend tentar remover algo que não está mais lá
+            return res.status(404).json({ message: 'Favorito não encontrado.' });
+        }
+
+        res.json({ message: 'Produto removido dos favoritos com sucesso!' });
+    } catch (error) {
+        console.error('ERRO AO REMOVER FAVORITO:', error);
+        res.status(500).json({ error: 'Erro interno ao remover favorito.' });
+    }
+});
+
+// ROTA PARA LISTAR OS PRODUTOS FAVORITOS DE UM USUÁRIO
+app.get('/api/favoritos', authenticateToken, async (req, res) => {
+    const usuario_id = req.user.userId;
+
+    try {
+        // Este comando junta as tabelas 'favoritos' e 'produtos' para pegar os detalhes completos
+        const query = `
+            SELECT p.* FROM produtos p
+            JOIN favoritos f ON p.id = f.produto_id
+            WHERE f.usuario_id = ?
+        `;
+        const produtosFavoritos = await dbAll(query, [usuario_id]);
+        res.json(produtosFavoritos);
+    } catch (error) {
+        console.error('ERRO AO BUSCAR FAVORITOS:', error);
+        res.status(500).json({ error: 'Erro ao carregar favoritos.' });
     }
 });
 

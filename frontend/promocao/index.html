@@ -240,7 +240,7 @@
     }
     .botao-nav {
         padding: 12px 24px;
-        background-color: #3d8f7a;
+        background-color: #29443c;
         color: #fff;
         text-decoration: none;
         border-radius: 8px;
@@ -249,7 +249,7 @@
         text-align: center;
     }
     .botao-nav:hover {
-        background-color: #317262;
+        background-color: #29443c;
         transform: translateY(-3px);
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
@@ -343,10 +343,10 @@
       </div>
     </main>
     
-    <div class="navegacao-categorias">
-      <a href="../novidade/index.html" class="botao-nav">&larr; Voltar (Novidades)</a>
-      <a href="../tendencias/index.html" class="botao-nav">Avançar (Tendências) &rarr;</a>
-    </div>
+   <div class="navegacao-categorias">
+  <a href="../tendencias/index.html" class="botao-nav">&larr; Voltar (Tendências)</a>
+  <a href="/frontend/novas colecoes/index.html" class="botao-nav">Avançar (Novas Coleções) &rarr;</a>
+</div>
 
   </div> 
   <div id="carrinho-lateral-modal" class="carrinho-lateral">
@@ -366,21 +366,47 @@
     </div>
   </div>
   
-  <script src="../js/carrinho.js"></script> 
-  
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-
+document.addEventListener('DOMContentLoaded', function() {
     // --- ELEMENTOS DO DOM ---
     const modalCarrinho = document.getElementById('carrinho-lateral-modal');
     const corpoCarrinhoLateral = document.getElementById('itens-carrinho-lateral');
     const totalCarrinhoLateralEl = document.getElementById('total-carrinho-lateral');
 
-    // --- FUNÇÕES DE LÓGICA (FAVORITOS, CARRINHO LATERAL) ---
+    // --- FUNÇÕES AUXILIARES ---
+    function formatCurrency(value) {
+        return 'R$ ' + value.toFixed(2).replace('.', ',');
+    }
 
+    function getFavoritos() {
+        const favoritos = localStorage.getItem('favoritos');
+        return favoritos ? JSON.parse(favoritos) : [];
+    }
+
+    function salvarFavoritos(favoritos) {
+        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+    }
+
+    function getCarrinho() {
+        const carrinho = localStorage.getItem('carrinho');
+        return carrinho ? JSON.parse(carrinho) : [];
+    }
+
+    function salvarCarrinho(carrinho) {
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        atualizarContadorHeader();
+    }
+
+    function atualizarTudoNaTela() {
+        atualizarContadorHeader();
+        renderizarItensNoCarrinhoLateral();
+    }
+
+    // --- FUNÇÕES PRINCIPAIS ---
     function toggleFavorito(id, botao) {
         let favoritos = getFavoritos();
         const index = favoritos.indexOf(id);
+
         if (index > -1) {
             favoritos.splice(index, 1);
             botao.classList.remove('favorited');
@@ -406,7 +432,6 @@
         if (confirm('Tem certeza que deseja esvaziar seu carrinho?')) {
             salvarCarrinho([]);
             atualizarTudoNaTela();
-            renderizarItensNoCarrinhoLateral();
         }
     }
 
@@ -421,94 +446,161 @@
             return;
         }
 
+        // Usando fragmento para melhor performance
+        const fragment = document.createDocumentFragment();
+
         carrinho.forEach(item => {
             const precoNumerico = parseFloat(item.preco);
             subtotal += precoNumerico * item.quantidade;
-            const itemHTML = `
-                <div class="carrinho-lateral-item" data-id="<span class="math-inline">\{item\.id\}"\>
-<img src\="</span>{item.imagem}" alt="<span class="math-inline">\{item\.nome\}"\>
-<div class\="info"\>
-<h4\></span>{item.nome}</h4>
-                        <p class="preco"><span class="math-inline">\{formatCurrency\(precoNumerico\)\}</p\>
-<div class\="qty\-controls"\>
-<button class\="btn\-qty\-lateral" data\-id\="</span>{item.id}" data-change="-1">-</button>
-                            <span><span class="math-inline">\{item\.quantidade\}</span\>
-<button class\="btn\-qty\-lateral" data\-id\="</span>{item.id}" data-change="1">+</button>
-                        </div>
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'carrinho-lateral-item';
+            itemDiv.dataset.id = item.id;
+            
+            // Tratamento seguro para imagens
+            const imgHTML = item.imagem ? `<img src="${item.imagem}" alt="${item.nome}" onerror="this.style.display='none'">` : '';
+            
+            itemDiv.innerHTML = `
+                ${imgHTML}
+                <div class="info">
+                    <h4>${item.nome}</h4>
+                    <p class="preco">${formatCurrency(precoNumerico)}</p>
+                    <div class="qty-controls">
+                        <button class="btn-qty-lateral" data-id="${item.id}" data-change="-1">-</button>
+                        <span>${item.quantidade}</span>
+                        <button class="btn-qty-lateral" data-id="${item.id}" data-change="1">+</button>
                     </div>
-                    <button class="remover-item-btn" data-id="${item.id}">&times;</button>
                 </div>
+                <button class="remover-item-btn" data-id="${item.id}">&times;</button>
             `;
-            corpoCarrinhoLateral.innerHTML += itemHTML;
+            
+            fragment.appendChild(itemDiv);
         });
 
+        corpoCarrinhoLateral.appendChild(fragment);
         totalCarrinhoLateralEl.textContent = formatCurrency(subtotal);
         ligarControlesDoCarrinhoLateral();
     }
 
     function ligarControlesDoCarrinhoLateral() {
-        corpoCarrinhoLateral.querySelectorAll('.remover-item-btn').forEach(btn => {
+        document.querySelectorAll('.remover-item-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 removerItemDoCarrinho(this.dataset.id);
                 renderizarItensNoCarrinhoLateral();
             });
         });
 
-        corpoCarrinhoLateral.querySelectorAll('.btn-qty-lateral').forEach(btn => {
+        document.querySelectorAll('.btn-qty-lateral').forEach(btn => {
             btn.addEventListener('click', function() {
                 const id = this.dataset.id;
                 const change = parseInt(this.dataset.change);
                 const item = getCarrinho().find(p => p.id === id);
+                
                 if (item) {
-                    atualizarQuantidadeItem(id, item.quantidade + change);
+                    const novaQuantidade = item.quantidade + change;
+                    if (novaQuantidade > 0) {
+                        atualizarQuantidadeItem(id, novaQuantidade);
+                    } else {
+                        removerItemDoCarrinho(id);
+                    }
                     renderizarItensNoCarrinhoLateral();
                 }
             });
         });
     }
 
-    // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+    function atualizarContadorHeader() {
+        const carrinho = getCarrinho();
+        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+        const contador = document.querySelector('.carrinho-contador');
+        if (contador) {
+            contador.textContent = totalItens > 0 ? `(${totalItens})` : '';
+        }
+    }
 
-    // Roda na carga da página
+    function adicionarAoCarrinho(id, nome, preco, imagem) {
+        let carrinho = getCarrinho();
+        const itemExistente = carrinho.find(item => item.id === id);
+
+        if (itemExistente) {
+            itemExistente.quantidade += 1;
+        } else {
+            carrinho.push({
+                id: id,
+                nome: nome,
+                preco: preco,
+                imagem: imagem || '', // Tratamento para imagem opcional
+                quantidade: 1
+            });
+        }
+
+        salvarCarrinho(carrinho);
+        // ALERTA DE ADIÇÃO AO CARRINHO (MANTIDO COMO SOLICITADO)
+        alert(`"${nome}" foi adicionado ao carrinho!`);
+    }
+
+    function removerItemDoCarrinho(id) {
+        let carrinho = getCarrinho();
+        carrinho = carrinho.filter(item => item.id !== id);
+        salvarCarrinho(carrinho);
+    }
+
+    function atualizarQuantidadeItem(id, quantidade) {
+        let carrinho = getCarrinho();
+        const item = carrinho.find(item => item.id === id);
+        if (item) {
+            item.quantidade = quantidade;
+            salvarCarrinho(carrinho);
+        }
+    }
+
+    // --- INICIALIZAÇÃO ---
     atualizarContadorHeader();
     renderizarStatusFavoritos();
 
-    // Liga os botões "COMPRAR" de todos os produtos
+    // Event Listeners
     document.querySelectorAll('.add-to-cart-btn').forEach(botao => {
         botao.addEventListener('click', function() {
             const id = this.dataset.id;
             const nome = this.dataset.nome;
-            const preco = parseFloat(this.dataset.preco);
-            const imagem = this.dataset.imagem;
+            const preco = parseFloat(this.dataset.preco || 0); // Tratamento para preço inválido
+            const imagem = this.dataset.imagem || ''; // Tratamento para imagem vazia
             
             adicionarAoCarrinho(id, nome, preco, imagem);
             renderizarItensNoCarrinhoLateral();
         });
     });
 
-    // Liga os botões de "FAVORITO"
     document.querySelectorAll('.favorite-btn').forEach(botao => {
         botao.addEventListener('click', function(e) {
             e.preventDefault();
             toggleFavorito(this.dataset.id, this);
         });
     });
-    
-    // Controle de abertura e fechamento do carrinho lateral
-    document.getElementById('abrir-carrinho-lateral').addEventListener('click', function(event) {
-        event.preventDefault(); 
-        renderizarItensNoCarrinhoLateral();
-        modalCarrinho.classList.add('aberto');
-    });
 
-    document.getElementById('fechar-carrinho-lateral').addEventListener('click', function() {
-        modalCarrinho.classList.remove('aberto');
-    });
+    // Controles do carrinho lateral com verificação de elementos
+    const abrirCarrinhoBtn = document.getElementById('abrir-carrinho-lateral');
+    const fecharCarrinhoBtn = document.getElementById('fechar-carrinho-lateral');
+    const limparCarrinhoBtn = document.getElementById('limpar-carrinho-btn');
 
-    // Liga o botão "Esvaziar Carrinho"
-    document.getElementById('limpar-carrinho-btn').addEventListener('click', limparCarrinho);
+    if (abrirCarrinhoBtn && modalCarrinho) {
+        abrirCarrinhoBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            renderizarItensNoCarrinhoLateral();
+            modalCarrinho.classList.add('aberto');
+        });
+    }
 
-  });
-  </script>
+    if (fecharCarrinhoBtn && modalCarrinho) {
+        fecharCarrinhoBtn.addEventListener('click', function() {
+            modalCarrinho.classList.remove('aberto');
+        });
+    }
+
+    if (limparCarrinhoBtn) {
+        limparCarrinhoBtn.addEventListener('click', limparCarrinho);
+    }
+});
+</script>
 </body>
 </html>

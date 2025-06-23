@@ -57,7 +57,7 @@
 }
 .botao-nav {
     padding: 12px 24px;
-    background-color: #3d8f7a;  /* <-- COR PRINCIPAL DO BOTÃO */
+    background-color:#29443c;  /* <-- COR PRINCIPAL DO BOTÃO */
     color: #fff;
     text-decoration: none;
     border-radius: 8px;
@@ -66,7 +66,7 @@
     text-align: center;
 }
 .botao-nav:hover {
-    background-color: #317262; /* <-- COR DO BOTÃO AO PASSAR O MOUSE */
+    background-color:#29443c; /* <-- COR DO BOTÃO AO PASSAR O MOUSE */
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
@@ -104,10 +104,10 @@
       </div>
     </main>
 
-    <div class="navegacao-categorias">
-      <a href="../novas_colecoes/tendencias/index.html" class="botao-nav">&larr; Voltar (Tendências)</a>
-      <a href="../camisas/index.html" class="botao-nav">Avançar (Camisas) &rarr;</a>
-    </div>
+   <div class="navegacao-categorias">
+    <a href="../jackets/index.html" class="botao-nav">&larr; Voltar (Jaquetas)</a>
+    <a href="../novidade/index.html" class="botao-nav">Avançar (Novidades) &rarr;</a>
+</div>
     
   </div> 
 
@@ -131,55 +131,122 @@
   <script src="../js/carrinho.js"></script> 
   
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-
+document.addEventListener('DOMContentLoaded', function() {
     // --- ELEMENTOS DO DOM ---
     const modalCarrinho = document.getElementById('carrinho-lateral-modal');
     const corpoCarrinhoLateral = document.getElementById('itens-carrinho-lateral');
     const totalCarrinhoLateralEl = document.getElementById('total-carrinho-lateral');
 
-    // --- FUNÇÕES DE LÓGICA (FAVORITOS, CARRINHO LATERAL) ---
+    // --- FUNÇÕES AUXILIARES ---
+    function formatCurrency(value) {
+        return 'R$ ' + value.toFixed(2).replace('.', ',');
+    }
 
-    // Função para marcar/desmarcar um item como favorito
-    function toggleFavorito(id, botao) {
-        let favoritos = getFavoritos();
-        const index = favoritos.indexOf(id);
+    // =================================================================================
+    // INÍCIO DA SEÇÃO MODIFICADA (O RESTO DO CÓDIGO ESTÁ IGUAL)
+    // =================================================================================
 
-        if (index > -1) {
-            favoritos.splice(index, 1); // Remove se já existe
-            botao.classList.remove('favorited');
-        } else {
-            favoritos.push(id); // Adiciona se não existe
-            botao.classList.add('favorited');
+    // Esta função será chamada quando a página carregar para pintar os corações corretos.
+    async function renderizarStatusFavoritos() {
+        const token = localStorage.getItem('token');
+        // Se não há token, não há usuário logado, então não há favoritos a mostrar.
+        if (!token) return;
+
+        try {
+            // 1. Busca no backend a lista de produtos favoritados pelo usuário logado
+            const response = await fetch('/api/favoritos', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) return; // Se der erro, não faz nada
+
+            const produtosFavoritos = await response.json();
+            // Cria uma lista só com os IDs dos produtos favoritos. Ex: [ '1', '5', '12' ]
+            const idsFavoritos = produtosFavoritos.map(p => p.id.toString()); 
+
+            // 2. Passa por todos os botões de favorito na tela
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                const produtoId = btn.dataset.id; // Pega o ID do produto do botão
+                
+                // 3. Se o ID do botão está na lista de favoritos, pinta o coração
+                if (idsFavoritos.includes(produtoId)) {
+                    btn.classList.add('favorited');
+                } else {
+                    btn.classList.remove('favorited');
+                }
+            });
+
+        } catch (error) {
+            console.error('Erro ao renderizar status dos favoritos:', error);
         }
-        salvarFavoritos(favoritos);
     }
 
-    // Função para aplicar o estilo visual aos botões de favoritos na carga da página
-    function renderizarStatusFavoritos() {
-        const favoritos = getFavoritos();
-        document.querySelectorAll('.favorite-btn').forEach(btn => {
-            if (favoritos.includes(btn.dataset.id)) {
-                btn.classList.add('favorited');
+
+    // Esta função será chamada quando o usuário CLICAR no botão de coração.
+    async function toggleFavorito(produtoId, botao) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Você precisa estar logado para gerenciar favoritos.');
+            // Adapte o caminho abaixo se sua página de login for diferente
+            window.location.href = '/login/index.html'; 
+            return;
+        }
+
+        // Verifica se o botão JÁ ESTÁ marcado como favorito pela classe 'favorited'
+        const isFavorited = botao.classList.contains('favorited');
+        
+        // Define o método e a URL da API com base em já ser favorito ou não
+        const method = isFavorited ? 'DELETE' : 'POST';
+        const url = isFavorited ? `/api/favoritos/${produtoId}` : '/api/favoritos';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                // O corpo só é necessário ao adicionar (POST)
+                body: method === 'POST' ? JSON.stringify({ produto_id: produtoId }) : null
+            });
+
+            if (response.ok) {
+                // Se a operação no backend deu certo, atualiza o visual do botão
+                botao.classList.toggle('favorited');
             } else {
-                btn.classList.remove('favorited');
+                const result = await response.json();
+                alert(`Erro: ${result.error}`);
             }
-        });
+
+        } catch (error) {
+            console.error('Erro ao alternar favorito:', error);
+        }
     }
 
-    // Função para limpar o carrinho completamente
+    // =================================================================================
+    // FIM DA SEÇÃO MODIFICADA (O RESTO DO CÓDIGO ESTÁ IGUAL)
+    // =================================================================================
+
+    function getCarrinho() {
+        return JSON.parse(localStorage.getItem('carrinho')) || [];
+    }
+
+    function salvarCarrinho(carrinho) {
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        atualizarContadorHeader();
+    }
+
     function limparCarrinho() {
         if (confirm('Tem certeza que deseja esvaziar seu carrinho?')) {
             salvarCarrinho([]);
-            atualizarTudoNaTela(); // Função do carrinho.js que atualiza o header
-            renderizarItensNoCarrinhoLateral(); // Atualiza o carrinho lateral
+            renderizarItensNoCarrinhoLateral();
         }
     }
 
-    // A principal função nova: Renderiza os itens no carrinho lateral
     function renderizarItensNoCarrinhoLateral() {
         const carrinho = getCarrinho();
-        corpoCarrinhoLateral.innerHTML = ''; // Limpa o conteúdo atual
+        corpoCarrinhoLateral.innerHTML = '';
         let subtotal = 0;
 
         if (carrinho.length === 0) {
@@ -194,7 +261,6 @@
 
             const itemHTML = `
                 <div class="carrinho-lateral-item" data-id="${item.id}">
-                    <img src="${item.imagem}" alt="${item.nome}">
                     <div class="info">
                         <h4>${item.nome}</h4>
                         <p class="preco">${formatCurrency(precoNumerico)}</p>
@@ -207,64 +273,108 @@
                     <button class="remover-item-btn" data-id="${item.id}">&times;</button>
                 </div>
             `;
-            corpoCarrinhoLateral.innerHTML += itemHTML;
+            corpoCarrinhoLateral.insertAdjacentHTML('beforeend', itemHTML);
         });
 
         totalCarrinhoLateralEl.textContent = formatCurrency(subtotal);
         ligarControlesDoCarrinhoLateral();
     }
 
-    // Liga os botões que foram recém-criados dentro do carrinho lateral
     function ligarControlesDoCarrinhoLateral() {
-        corpoCarrinhoLateral.querySelectorAll('.remover-item-btn').forEach(btn => {
+        document.querySelectorAll('.remover-item-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const id = this.dataset.id;
-                removerItemDoCarrinho(id); // Usa a função do carrinho.js
-                renderizarItensNoCarrinhoLateral(); // Re-renderiza o carrinho lateral
+                removerItemDoCarrinho(id);
+                renderizarItensNoCarrinhoLateral();
             });
         });
 
-        corpoCarrinhoLateral.querySelectorAll('.btn-qty-lateral').forEach(btn => {
+        document.querySelectorAll('.btn-qty-lateral').forEach(btn => {
             btn.addEventListener('click', function() {
                 const id = this.dataset.id;
                 const change = parseInt(this.dataset.change);
                 const item = getCarrinho().find(p => p.id === id);
                 if (item) {
-                    atualizarQuantidadeItem(id, item.quantidade + change); // Usa a função do carrinho.js
-                    renderizarItensNoCarrinhoLateral(); // Re-renderiza o carrinho lateral
+                    const novaQuantidade = item.quantidade + change;
+                    if (novaQuantidade > 0) {
+                        atualizarQuantidadeItem(id, novaQuantidade);
+                        renderizarItensNoCarrinhoLateral();
+                    } else {
+                        removerItemDoCarrinho(id);
+                        renderizarItensNoCarrinhoLateral();
+                    }
                 }
             });
         });
     }
 
-    // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+    function atualizarContadorHeader() {
+        const carrinho = getCarrinho();
+        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+        const contador = document.querySelector('.carrinho-contador');
+        if (contador) {
+            contador.textContent = totalItens > 0 ? `(${totalItens})` : '';
+        }
+    }
 
-    // Roda na carga da página
+    function adicionarAoCarrinho(id, nome, preco, imagem) {
+        let carrinho = getCarrinho();
+        const itemExistente = carrinho.find(item => item.id === id);
+
+        if (itemExistente) {
+            itemExistente.quantidade += 1;
+        } else {
+            carrinho.push({
+                id: id,
+                nome: nome,
+                preco: preco,
+                imagem: imagem,
+                quantidade: 1
+            });
+        }
+
+        salvarCarrinho(carrinho);
+    }
+
+    function removerItemDoCarrinho(id) {
+        let carrinho = getCarrinho();
+        carrinho = carrinho.filter(item => item.id !== id);
+        salvarCarrinho(carrinho);
+    }
+
+    function atualizarQuantidadeItem(id, quantidade) {
+        let carrinho = getCarrinho();
+        const item = carrinho.find(item => item.id === id);
+        if (item) {
+            item.quantidade = quantidade;
+            salvarCarrinho(carrinho);
+        }
+    }
+
+    // --- INICIALIZAÇÃO ---
     atualizarContadorHeader();
-    renderizarStatusFavoritos();
+    renderizarStatusFavoritos(); // Agora vai chamar a nova função, conectada ao BD
 
-    // Liga os botões "COMPRAR" de todos os produtos
+    // Event Listeners
     document.querySelectorAll('.add-to-cart-btn').forEach(botao => {
         botao.addEventListener('click', function() {
             const id = this.dataset.id;
             const nome = this.dataset.nome;
             const preco = parseFloat(this.dataset.preco);
             const imagem = this.dataset.imagem;
-            adicionarAoCarrinho(id, nome, preco, imagem); // Função do carrinho.js
-            renderizarItensNoCarrinhoLateral(); // Atualiza o carrinho lateral imediatamente
+            adicionarAoCarrinho(id, nome, preco, imagem);
+            renderizarItensNoCarrinhoLateral();
         });
     });
 
-    // Liga os botões de "FAVORITO" (coração) de todos os produtos
     document.querySelectorAll('.favorite-btn').forEach(botao => {
         botao.addEventListener('click', function(e) {
             e.preventDefault();
             const id = this.dataset.id;
-            toggleFavorito(id, this);
+            toggleFavorito(id, this); // Agora vai chamar a nova função
         });
     });
-    
-    // Controle de abertura e fechamento do carrinho lateral
+
     const linkAbrirCarrinho = document.getElementById('abrir-carrinho-lateral');
     const btnFecharCarrinho = document.getElementById('fechar-carrinho-lateral');
     
@@ -280,12 +390,11 @@
         });
     }
 
-    // Liga o botão "Esvaziar Carrinho"
     const btnLimpar = document.getElementById('limpar-carrinho-btn');
     if (btnLimpar) {
         btnLimpar.addEventListener('click', limparCarrinho);
     }
-  });
-  </script>
+});
+</script>
 </body>
 </html>

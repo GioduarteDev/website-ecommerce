@@ -55,17 +55,17 @@
     .btn-finalizar { display: block; width: 100%; padding: 15px; background-color: #000; color: #fff; text-align: center; text-decoration: none; border-radius: 4px; font-weight: 600; margin-bottom: 10px; }
     .btn-limpar { display: block; width: 100%; padding: 10px; background-color: transparent; color: #888; text-align: center; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; font-weight: 500; cursor: pointer;}
 
-    /* --- CSS ADICIONADO PARA OS BOTÕES DE NAVEGAÇÃO --- */
+    /* --- BOTÕES DE NAVEGAÇÃO --- */
     .navegacao-categorias {
         display: flex;
         justify-content: space-between;
-        padding: 30px 0 10px 0; 
-        border-top: 1px solid #eee; 
-        margin-top: 30px; 
+        padding: 20px 0;
+        margin-top: 20px;
+        border-top: 1px solid #eee;
     }
     .botao-nav {
         padding: 12px 24px;
-        background-color: #3d8f7a;
+        background-color: #29443c;
         color: #fff;
         text-decoration: none;
         border-radius: 8px;
@@ -74,12 +74,10 @@
         text-align: center;
     }
     .botao-nav:hover {
-        background-color: #317262;
+        background-color:#29443c;
         transform: translateY(-3px);
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    /* --- FIM DO CSS ADICIONADO --- */
-
   </style>
 </head>
 <body>
@@ -88,6 +86,7 @@
       <div class="left">
         <a href="../login/index.html">Login</a>
         <a href="#" id="abrir-carrinho-lateral">Carrinho (<span id="cart-count">0</span>)</a>
+        <a href="favoritos.html">Favoritos</a>
       </div>
       <div class="right">
         <a href="../fundoprincipal/index.html">ABELAR</a>
@@ -318,6 +317,11 @@
         </div>
       </div>
     </main>
+
+    <div class="navegacao-categorias">
+      <a href="../camisas/index.html" class="botao-nav">&larr; Voltar (Camisas)</a>
+      <a href="../bermudas/index.html" class="botao-nav">Avançar (Bermudas) &rarr;</a>
+    </div>
   </div> 
   
   <div id="carrinho-lateral-modal" class="carrinho-lateral">
@@ -339,7 +343,7 @@
   
   <script src="../js/carrinho.js"></script> 
   
-  <script>
+ <script>
   document.addEventListener('DOMContentLoaded', function() {
 
     // --- ELEMENTOS DO DOM ---
@@ -396,15 +400,15 @@
             const precoNumerico = parseFloat(item.preco);
             subtotal += precoNumerico * item.quantidade;
             const itemHTML = `
-                <div class="carrinho-lateral-item" data-id="<span class="math-inline">\{item\.id\}"\>
-<img src\="</span>{item.imagem}" alt="<span class="math-inline">\{item\.nome\}"\>
-<div class\="info"\>
-<h4\></span>{item.nome}</h4>
-                        <p class="preco"><span class="math-inline">\{formatCurrency\(precoNumerico\)\}</p\>
-<div class\="qty\-controls"\>
-<button class\="btn\-qty\-lateral" data\-id\="</span>{item.id}" data-change="-1">-</button>
-                            <span><span class="math-inline">\{item\.quantidade\}</span\>
-<button class\="btn\-qty\-lateral" data\-id\="</span>{item.id}" data-change="1">+</button>
+                <div class="carrinho-lateral-item" data-id="${item.id}">
+                    <img src="${item.imagem}" alt="${item.nome}" />
+                    <div class="info">
+                        <h4>${item.nome}</h4>
+                        <p class="preco">${formatCurrency(precoNumerico)}</p>
+                        <div class="qty-controls">
+                            <button class="btn-qty-lateral" data-id="${item.id}" data-change="-1">-</button>
+                            <span>${item.quantidade}</span>
+                            <button class="btn-qty-lateral" data-id="${item.id}" data-change="1">+</button>
                         </div>
                     </div>
                     <button class="remover-item-btn" data-id="${item.id}">&times;</button>
@@ -440,13 +444,12 @@
 
     // --- INICIALIZAÇÃO E EVENT LISTENERS ---
 
-    // Roda na carga da página
     atualizarContadorHeader();
     renderizarStatusFavoritos();
 
     // Liga os botões "COMPRAR" de todos os produtos
     document.querySelectorAll('.add-to-cart-btn').forEach(botao => {
-        botao.addEventListener('click', function() {
+        botao.addEventListener('click', function () {
             const card = this.closest('.card');
             const idBase = this.dataset.id;
             const nomeBase = this.dataset.nome;
@@ -464,12 +467,13 @@
                 alert('Por favor, selecione uma cor.');
                 return;
             }
+
             const tamanho = tamanhoEl.dataset.tamanho;
             const cor = corEl.dataset.cor;
 
-            const idVariante = `<span class="math-inline">\{idBase\}\-</span>{tamanho}-${cor}`;
-            const nomeVariante = `<span class="math-inline">\{nomeBase\} \(</span>{tamanho} / ${cor})`;
-            
+            const idVariante = `${idBase}-${tamanho}-${cor}`;
+            const nomeVariante = `${nomeBase} (${tamanho} / ${cor})`;
+
             adicionarAoCarrinho(idVariante, nomeVariante, preco, imagem);
             renderizarItensNoCarrinhoLateral();
         });
@@ -482,7 +486,7 @@
             toggleFavorito(this.dataset.id, this);
         });
     });
-    
+
     // Controle de abertura e fechamento do carrinho lateral
     document.getElementById('abrir-carrinho-lateral').addEventListener('click', function(event) {
         event.preventDefault(); 
@@ -516,7 +520,9 @@
             });
         });
     });
+
   });
-  </script>
+</script>
+
 </body>
 </html>
